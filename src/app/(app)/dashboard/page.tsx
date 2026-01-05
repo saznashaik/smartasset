@@ -64,7 +64,7 @@ export default function DashboardPage() {
                     </Card>
                 ))}
             </div>
-            <div className="flex-1 rounded-lg overflow-hidden">
+            <div className="flex-1 rounded-lg overflow-hidden min-h-[calc(100vh-14rem)]">
                 <iframe
                     width="100%"
                     height="100%"
