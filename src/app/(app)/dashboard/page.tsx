@@ -10,7 +10,7 @@ export default function DashboardPage() {
             title: "Total Assets",
             value: dashboardData.totalAssets.toLocaleString(),
             icon: Tractor,
-            color: "text-primary",
+            color: "text-green-500",
         },
         {
             title: "High-Risk Assets",
@@ -28,7 +28,7 @@ export default function DashboardPage() {
             title: "Assets In Repair",
             value: dashboardData.assetsInRepair.toLocaleString(),
             icon: Wrench,
-            color: "text-primary",
+            color: "text-yellow-500",
         },
         {
             title: "Expiring in 2025-2027",
