@@ -1,7 +1,8 @@
 "use client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DollarSign, HardHat, ShieldAlert, Tractor, TrendingUp } from "lucide-react";
+import { DollarSign, HardHat, ShieldAlert, Tractor, TrendingUp, Wrench, CalendarClock } from "lucide-react";
 import { dashboardData } from "@/lib/data";
+import { cn } from "@/lib/utils";
 
 export default function DashboardPage() {
     const stats = [
@@ -9,26 +10,31 @@ export default function DashboardPage() {
             title: "Total Assets",
             value: dashboardData.totalAssets.toLocaleString(),
             icon: Tractor,
+            color: "text-primary",
         },
         {
             title: "High-Risk Assets",
             value: dashboardData.highRiskAssets.toLocaleString(),
             icon: ShieldAlert,
+            color: "text-red-500",
         },
         {
             title: "Replacement Cost",
             value: `$${dashboardData.replacementCost.toLocaleString()}`,
             icon: DollarSign,
+            color: "text-blue-500",
         },
         {
             title: "Assets In Repair",
             value: dashboardData.assetsInRepair.toLocaleString(),
-            icon: HardHat,
+            icon: Wrench,
+            color: "text-primary",
         },
         {
-            title: "Warranties Expiring",
+            title: "Expiring in 2025-2027",
             value: dashboardData.warrantiesExpiring.toLocaleString(),
-            icon: TrendingUp,
+            icon: CalendarClock,
+            color: "text-primary",
         }
     ]
     return (
@@ -40,7 +46,7 @@ export default function DashboardPage() {
                             <CardTitle className="text-sm font-medium">
                                 {stat.title}
                             </CardTitle>
-                            <stat.icon className="h-4 w-4 text-primary" />
+                            <stat.icon className={cn("h-4 w-4", stat.color)} />
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold">{stat.value}</div>
