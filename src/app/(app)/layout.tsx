@@ -2,7 +2,7 @@ import type { PropsWithChildren } from "react";
 import { SidebarProvider, Sidebar, SidebarHeader, SidebarContent, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppLogo } from "@/components/app-logo";
 import { SidebarNav } from "@/components/sidebar-nav";
-import { User } from "lucide-react";
+import { AppHeader } from "@/components/app-header";
 
 export default function AppLayout({ children }: PropsWithChildren) {
     return (
@@ -17,8 +17,9 @@ export default function AppLayout({ children }: PropsWithChildren) {
             </Sidebar>
             <SidebarInset>
                 <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b bg-background/80 px-4 backdrop-blur-sm sm:px-6">
-                    <div className="md:hidden">
-                        <SidebarTrigger />
+                    <div className="flex items-center gap-4">
+                        <SidebarTrigger className="md:hidden" />
+                        <AppHeader />
                     </div>
                     <div className="flex items-center gap-4 ml-auto">
                         {/* User menu can be added here */}
