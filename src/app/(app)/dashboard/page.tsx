@@ -38,8 +38,8 @@ export default function DashboardPage() {
         }
     ]
     return (
-        <div className="flex flex-col gap-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="flex flex-col h-full gap-6 -m-4 sm:-m-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 p-4 sm:p-6">
                 {stats.map((stat) => (
                     <Card key={stat.title} className="shadow-md hover:shadow-lg transition-shadow">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -54,13 +54,15 @@ export default function DashboardPage() {
                     </Card>
                 ))}
             </div>
-            <iframe
-                width="100%"
-                height="720"
-                src="https://us-east-1.quicksight.aws.amazon.com/sn/embed/share/accounts/430248170338/dashboards/f9ae3294-c908-483f-91ef-8469921e94e7?directory_alias=Keerthisri"
-                style={{ border: 'none' }}
-                >
-            </iframe>
+            <div className="flex-1">
+                <iframe
+                    width="100%"
+                    height="100%"
+                    src="https://us-east-1.quicksight.aws.amazon.com/sn/embed/share/accounts/430248170338/dashboards/f9ae3294-c908-483f-91ef-8469921e94e7?directory_alias=Keerthisri"
+                    style={{ border: 'none' }}
+                    >
+                </iframe>
+            </div>
         </div>
     );
 }
