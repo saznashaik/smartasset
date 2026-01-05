@@ -2,7 +2,7 @@ import type { PropsWithChildren } from "react";
 
 export default function DashboardLayout({ children }: PropsWithChildren) {
     return (
-        <div className="h-screen w-screen -m-4 sm:-m-6">
+        <div className="flex flex-1 flex-col h-[calc(100vh-4rem)]">
             {children}
         </div>
     );
