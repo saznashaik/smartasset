@@ -1,14 +1,13 @@
 "use client";
 
 import { Bot } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function ChatPage() {
     return (
         <Card className="h-[calc(100vh-10rem)] flex flex-col">
             <CardHeader>
-                <CardTitle className="font-headline flex items-center gap-2"><Bot /> AI Chat Assistant</CardTitle>
-                <CardDescription>Ask me anything about your assets.</CardDescription>
+                <CardTitle className="font-headline flex items-center gap-2"><Bot /> Chat with AssetAI</CardTitle>
             </CardHeader>
             <CardContent className="flex-1 overflow-hidden p-0">
                 <iframe
