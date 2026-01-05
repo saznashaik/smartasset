@@ -35,7 +35,7 @@ export default function DashboardPage() {
             <h1 className="text-2xl font-semibold">Asset Management Executive Dashboard</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 {stats.map((stat) => (
-                    <Card key={stat.title}>
+                    <Card key={stat.title} className="shadow-md">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">
                                 {stat.title}
