@@ -28,9 +28,6 @@ export default function AppLayout({ children }: PropsWithChildren) {
                 <main className="flex-1 p-4 sm:p-6">
                     {children}
                 </main>
-                 <footer className="p-4 text-center text-xs text-muted-foreground">
-                    © {new Date().getFullYear()} AssetAI. All Rights Reserved.
-                </footer>
             </SidebarInset>
         </SidebarProvider>
     );
