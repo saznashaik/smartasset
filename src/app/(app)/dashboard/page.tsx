@@ -45,7 +45,7 @@ const stats = [
 
 export default function DashboardPage() {
     return (
-        <div className="flex flex-1 flex-col p-4 sm:p-6">
+        <div className="flex flex-1 flex-col p-4 sm:p-6 h-full">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5 mb-4">
                 {stats.map((stat) => (
                     <Card
@@ -64,7 +64,7 @@ export default function DashboardPage() {
                     </Card>
                 ))}
             </div>
-            <div className="flex-1 rounded-lg overflow-hidden h-[2000vh]">
+            <div className="flex-1 rounded-lg overflow-hidden">
                 <iframe
                     width="100%"
                     height="100%"
