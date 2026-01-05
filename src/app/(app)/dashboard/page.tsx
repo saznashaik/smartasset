@@ -38,7 +38,7 @@ export default function DashboardPage() {
         }
     ]
     return (
-        <div className="flex flex-col h-full gap-6 -m-4 sm:-m-6">
+        <div className="flex flex-col h-full -m-4 sm:-m-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 p-4 sm:p-6">
                 {stats.map((stat) => (
                     <Card key={stat.title} className="shadow-md hover:shadow-lg transition-shadow">
@@ -54,7 +54,7 @@ export default function DashboardPage() {
                     </Card>
                 ))}
             </div>
-            <div className="flex-1">
+            <div className="flex-1 pb-4 sm:pb-6 px-4 sm:px-6">
                 <iframe
                     width="100%"
                     height="100%"
