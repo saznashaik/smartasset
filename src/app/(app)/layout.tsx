@@ -2,9 +2,7 @@ import type { PropsWithChildren } from "react";
 import { SidebarProvider, Sidebar, SidebarHeader, SidebarContent, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppLogo } from "@/components/app-logo";
 import { SidebarNav } from "@/components/sidebar-nav";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
+import { User } from "lucide-react";
 
 export default function AppLayout({ children }: PropsWithChildren) {
     return (
@@ -23,33 +21,15 @@ export default function AppLayout({ children }: PropsWithChildren) {
                         <SidebarTrigger />
                     </div>
                     <div className="flex items-center gap-4 ml-auto">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    size="icon"
-                                    className="overflow-hidden rounded-full"
-                                >
-                                    <Avatar>
-                                        <AvatarImage src="https://picsum.photos/seed/user/32/32" alt="User Avatar" data-ai-hint="person face"/>
-                                        <AvatarFallback>U</AvatarFallback>
-                                    </Avatar>
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem>Settings</DropdownMenuItem>
-                                <DropdownMenuItem>Support</DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem>Logout</DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                        {/* User menu can be added here */}
                     </div>
                 </header>
                 <main className="flex-1 p-4 sm:p-6">
                     {children}
                 </main>
+                 <footer className="p-4 text-center text-xs text-muted-foreground">
+                    © {new Date().getFullYear()} AssetAI. All Rights Reserved.
+                </footer>
             </SidebarInset>
         </SidebarProvider>
     );

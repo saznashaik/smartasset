@@ -56,10 +56,10 @@ export default function ChatPage() {
     };
 
     return (
-        <Card className="h-[calc(100vh-8rem)] flex flex-col">
+        <Card className="h-[calc(100vh-10rem)] flex flex-col">
             <CardHeader>
                 <CardTitle className="font-headline flex items-center gap-2"><Bot /> AI Chat Assistant</CardTitle>
-                <CardDescription>Ask me anything about assets, dashboards, or system functionalities.</CardDescription>
+                <CardDescription>Ask me anything about your assets.</CardDescription>
             </CardHeader>
             <CardContent className="flex-1 overflow-hidden">
                 <ScrollArea className="h-full pr-4">

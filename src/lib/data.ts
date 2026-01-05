@@ -1,3 +1,11 @@
+export const dashboardData = {
+    totalAssets: 2000,
+    highRiskAssets: 500,
+    replacementCost: 1460174,
+    assetsInRepair: 679,
+    warrantiesExpiring: 611,
+};
+
 export const assetStatusData = [
     { name: 'Operational', value: 350, fill: 'hsl(var(--chart-1))' },
     { name: 'Under Maintenance', value: 75, fill: 'hsl(var(--chart-4))' },
