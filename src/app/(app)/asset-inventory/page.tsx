@@ -61,6 +61,8 @@ const DISPLAY_HEADERS = [
     'PredictedDecision'
 ];
 
+const DATE_COLUMNS = ['PurchaseDate', 'WarrantyExpirationDate', 'LicenseExpirationDate'];
+
 export default function AssetInventoryPage() {
     const [originalData, setOriginalData] = useState<TableRecord[]>([]);
     const [filteredData, setFilteredData] = useState<TableRecord[]>([]);
@@ -110,7 +112,12 @@ export default function AssetInventoryPage() {
 
         const newFilteredData = originalData.filter(row => {
             return Object.entries(filters).every(([header, value]) => {
-                return !value || row[header] === value;
+                if (!value) return true;
+                if (DATE_COLUMNS.includes(header)) {
+                    const rowDate = new Date(row[header]);
+                    return rowDate.getFullYear().toString() === value;
+                }
+                return row[header] === value;
             });
         });
         setFilteredData(newFilteredData);
@@ -120,7 +127,14 @@ export default function AssetInventoryPage() {
         const values = new Set<string>();
         originalData.forEach(row => {
             if (row[header]) {
-                values.add(row[header]);
+                 if (DATE_COLUMNS.includes(header)) {
+                    const date = new Date(row[header]);
+                    if (!isNaN(date.getTime())) {
+                        values.add(date.getFullYear().toString());
+                    }
+                } else {
+                    values.add(row[header]);
+                }
             }
         });
         return Array.from(values).sort();
