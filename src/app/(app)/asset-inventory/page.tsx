@@ -135,7 +135,7 @@ export default function AssetInventoryPage() {
 
             <div className="p-4 border rounded-lg bg-card space-y-4">
                 <div className="flex flex-col md:flex-row gap-4">
-                    <div className="relative flex-grow">
+                    <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
                             type="text"
@@ -147,15 +147,15 @@ export default function AssetInventoryPage() {
                         />
                     </div>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
                     {allHeaders.map(header => (
-                        <div key={header} className="min-w-[120px]">
+                        <div key={header}>
                             <Select
                                 onValueChange={(value) => handleFilterChange(header, value)}
                                 value={filters[header] || 'all'}
                                 disabled={data.length === 0 || !dropdownOptions[header] || dropdownOptions[header].length === 0}
                             >
-                                <SelectTrigger>
+                                <SelectTrigger className="text-xs">
                                     <SelectValue placeholder={header} />
                                 </SelectTrigger>
                                 <SelectContent>
