@@ -20,20 +20,16 @@ export default function AssetInventoryPage() {
     const [filters, setFilters] = useState<Record<string, string>>({});
     const [dropdownOptions, setDropdownOptions] = useState<Record<string, string[]>>({});
 
-    const filterableColumns = useMemo(() => {
-        return allHeaders;
-    }, [allHeaders]);
-
     useEffect(() => {
         if (data.length > 0) {
             const options: Record<string, string[]> = {};
-            filterableColumns.forEach(header => {
+            allHeaders.forEach(header => {
                 const uniqueValues = [...new Set(data.map(row => row[header]).filter(Boolean))];
                 options[header] = uniqueValues;
             });
             setDropdownOptions(options);
         }
-    }, [data, filterableColumns]);
+    }, [data, allHeaders]);
 
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -164,7 +160,7 @@ export default function AssetInventoryPage() {
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" disabled={data.length === 0}>
-                                View <ChevronDown className="ml-2 h-4 w-4" />
+                                Filter Columns <ChevronDown className="ml-2 h-4 w-4" />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
@@ -184,7 +180,7 @@ export default function AssetInventoryPage() {
                     </DropdownMenu>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                    {filterableColumns.map(header => (
+                    {visibleHeaders.map(header => (
                         <Select
                             key={header}
                             onValueChange={(value) => handleFilterChange(header, value)}
@@ -192,7 +188,7 @@ export default function AssetInventoryPage() {
                             disabled={data.length === 0 || !dropdownOptions[header] || dropdownOptions[header].length === 0}
                         >
                             <SelectTrigger>
-                                <SelectValue placeholder={header} />
+                                <SelectValue placeholder={`Filter ${header}`} />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="all">All {header}s</SelectItem>
