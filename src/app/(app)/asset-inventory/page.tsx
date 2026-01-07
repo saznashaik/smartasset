@@ -147,9 +147,9 @@ export default function AssetInventoryPage() {
                         />
                     </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="grid grid-cols-6 gap-2">
                     {allHeaders.map(header => (
-                        <div key={header} className="flex-auto">
+                        <div key={header}>
                             <Select
                                 onValueChange={(value) => handleFilterChange(header, value)}
                                 value={filters[header] || 'all'}
