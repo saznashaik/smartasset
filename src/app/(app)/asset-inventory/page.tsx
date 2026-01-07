@@ -201,22 +201,22 @@ export default function AssetInventoryPage() {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="w-[50px]">
+                                <TableHead className="w-[50px] p-2">
                                      <Checkbox />
                                 </TableHead>
                                 {visibleHeaders.map((header) => (
-                                    <TableHead key={header}>{header}</TableHead>
+                                    <TableHead key={header} className="p-2">{header}</TableHead>
                                 ))}
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {filteredData.map((row, rowIndex) => (
                                 <TableRow key={rowIndex}>
-                                     <TableCell>
+                                     <TableCell className="p-2">
                                         <Checkbox />
                                     </TableCell>
                                     {visibleHeaders.map((header) => (
-                                        <TableCell key={`${rowIndex}-${header}`}>
+                                        <TableCell key={`${rowIndex}-${header}`} className="p-2">
                                             {header === 'Status' ? (
                                                 <Badge variant={row[header] === 'Active' ? 'default' : 'destructive'} className={row[header] === 'Active' ? 'bg-green-500' : ''}>{row[header]}</Badge>
                                             ) : (
