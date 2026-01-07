@@ -14,7 +14,6 @@ import {
   DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
 import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 type TableRecord = Record<string, string>;
 
@@ -125,10 +124,8 @@ export default function AssetInventoryPage() {
         setFilters(prev => {
             const newFilters = { ...prev };
             if (value === null || (newFilters[header] && value !== null && newFilters[header] === value)) {
-                // Uncheck/clear filter for this specific value
                  delete newFilters[header];
             } else if (value === null) {
-                // Clear all filters for this header
                 delete newFilters[header];
             }
             else {
