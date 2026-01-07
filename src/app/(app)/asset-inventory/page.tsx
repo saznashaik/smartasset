@@ -6,16 +6,14 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Upload, Search, Download, Save, X, ChevronDown } from 'lucide-react';
+import { Upload, Search, Download, Save, X } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 
 type TableRecord = Record<string, string>;
 
 export default function AssetInventoryPage() {
     const [data, setData] = useState<TableRecord[]>([]);
     const [allHeaders, setAllHeaders] = useState<string[]>([]);
-    const [visibleHeaders, setVisibleHeaders] = useState<string[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [filters, setFilters] = useState<Record<string, string>>({});
     const [dropdownOptions, setDropdownOptions] = useState<Record<string, string[]>>({});
@@ -43,7 +41,6 @@ export default function AssetInventoryPage() {
                         const firstLine = lines.shift() as string;
                         const headerRow = firstLine.split(',').map(h => h.trim());
                         setAllHeaders(headerRow);
-                        setVisibleHeaders(headerRow);
                         setFilters({});
                         setSearchTerm('');
 
@@ -113,14 +110,6 @@ export default function AssetInventoryPage() {
 
     const activeFilters = Object.entries(filters);
 
-    const toggleColumnVisibility = (header: string) => {
-        setVisibleHeaders(prev => 
-            prev.includes(header) 
-                ? prev.filter(h => h !== header) 
-                : [...prev, header]
-        );
-    };
-
     return (
         <div className="flex flex-1 flex-col p-4 sm:p-6 h-full gap-6">
             <div className="flex items-center justify-between">
@@ -157,30 +146,9 @@ export default function AssetInventoryPage() {
                             disabled={data.length === 0}
                         />
                     </div>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline" disabled={data.length === 0}>
-                                Filter Columns <ChevronDown className="ml-2 h-4 w-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                            <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            {allHeaders.map((header) => (
-                                <DropdownMenuCheckboxItem
-                                    key={header}
-                                    checked={visibleHeaders.includes(header)}
-                                    onCheckedChange={() => toggleColumnVisibility(header)}
-                                    onSelect={(e) => e.preventDefault()}
-                                >
-                                    {header}
-                                </DropdownMenuCheckboxItem>
-                            ))}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
-                    {visibleHeaders.map(header => (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    {allHeaders.map(header => (
                         <div key={header} className="min-w-[120px]">
                             <Select
                                 onValueChange={(value) => handleFilterChange(header, value)}
@@ -188,10 +156,10 @@ export default function AssetInventoryPage() {
                                 disabled={data.length === 0 || !dropdownOptions[header] || dropdownOptions[header].length === 0}
                             >
                                 <SelectTrigger>
-                                    <SelectValue placeholder={`Filter ${header}`} />
+                                    <SelectValue placeholder={header} />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="all">All {header}s</SelectItem>
+                                    <SelectItem value="all">All</SelectItem>
                                     {dropdownOptions[header]?.map(option => (
                                         <SelectItem key={option} value={option}>{option}</SelectItem>
                                     ))}
@@ -231,7 +199,7 @@ export default function AssetInventoryPage() {
                                 <TableHead className="w-[50px]">
                                      <Checkbox />
                                 </TableHead>
-                                {visibleHeaders.map((header) => (
+                                {allHeaders.map((header) => (
                                     <TableHead key={header}>{header}</TableHead>
                                 ))}
                             </TableRow>
@@ -242,7 +210,7 @@ export default function AssetInventoryPage() {
                                      <TableCell>
                                         <Checkbox />
                                     </TableCell>
-                                    {visibleHeaders.map((header) => (
+                                    {allHeaders.map((header) => (
                                         <TableCell key={`${rowIndex}-${header}`}>
                                             {header === 'Status' ? (
                                                 <Badge variant={row[header] === 'Active' ? 'default' : 'destructive'} className={row[header] === 'Active' ? 'bg-green-500' : ''}>{row[header]}</Badge>
