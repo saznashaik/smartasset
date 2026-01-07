@@ -7,8 +7,8 @@ import { SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui
 
 const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/asset-inventory", label: "Asset Inventory", icon: List },
     { href: "/chat", label: "Chat AI", icon: MessageSquare },
+    { href: "/asset-inventory", label: "Asset Inventory", icon: List },
 ];
 
 export function SidebarNav() {
