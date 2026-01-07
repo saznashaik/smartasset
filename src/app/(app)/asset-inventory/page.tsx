@@ -89,11 +89,7 @@ export default function AssetInventoryPage() {
                                     </TableCell>
                                     {allHeaders.map((header) => (
                                         <TableCell key={`${rowIndex}-${header}`} className="p-2">
-                                            {header === 'Status' ? (
-                                                <Badge variant={row[header] === 'Active' ? 'default' : 'destructive'} className={row[header] === 'Active' ? 'bg-green-500' : ''}>{row[header]}</Badge>
-                                            ) : (
-                                                row[header]
-                                            )}
+                                            {row[header]}
                                         </TableCell>
                                     ))}
                                 </TableRow>
