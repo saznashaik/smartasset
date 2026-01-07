@@ -44,10 +44,26 @@ const parseCsvLine = (line: string): string[] => {
     return result;
 };
 
+const DISPLAY_HEADERS = [
+    'AssetID',
+    'AssetType',
+    'Manufacturer',
+    'Vendor',
+    'PurchaseDate',
+    'WarrantyExpirationDate',
+    'LicenseExpirationDate',
+    'AssignedTo',
+    'Department',
+    'Status',
+    'Location',
+    'TotalIncidents',
+    'RiskLevel_New',
+    'PredictedDecision'
+];
+
 export default function AssetInventoryPage() {
     const [originalData, setOriginalData] = useState<TableRecord[]>([]);
     const [filteredData, setFilteredData] = useState<TableRecord[]>([]);
-    const [allHeaders, setAllHeaders] = useState<string[]>([]);
     const [filters, setFilters] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(true);
 
@@ -74,7 +90,6 @@ export default function AssetInventoryPage() {
                         });
                         setOriginalData(records);
                         setFilteredData(records);
-                        setAllHeaders(headerRow);
                     }
                 }
             } catch (error) {
@@ -181,7 +196,7 @@ export default function AssetInventoryPage() {
                                     <TableHead className="w-[50px] p-2">
                                          <Checkbox />
                                     </TableHead>
-                                    {allHeaders.map((header) => (
+                                    {DISPLAY_HEADERS.map((header) => (
                                         <TableHead key={header} className="p-2">
                                             <div className="flex items-center gap-2">
                                                 {header}
@@ -229,7 +244,7 @@ export default function AssetInventoryPage() {
                                          <TableCell className="p-2">
                                             <Checkbox />
                                         </TableCell>
-                                        {allHeaders.map((header) => (
+                                        {DISPLAY_HEADERS.map((header) => (
                                             <TableCell key={`${rowIndex}-${header}`} className="p-2">
                                                 {row[header]}
                                             </TableCell>
