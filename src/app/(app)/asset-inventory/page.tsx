@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Upload, Filter, X } from 'lucide-react';
@@ -109,15 +109,27 @@ export default function AssetInventoryPage() {
     const handleFilterChange = (header: string, value: string | null) => {
         setFilters(prev => {
             const newFilters = { ...prev };
-            if (value === null || newFilters[header] === value) {
-                // Uncheck/clear filter
+            if (value === null || (newFilters[header] && value !== null && newFilters[header] === value)) {
+                // Uncheck/clear filter for this specific value
+                 delete newFilters[header];
+            } else if (value === null) {
+                // Clear all filters for this header
                 delete newFilters[header];
-            } else {
+            }
+            else {
                 newFilters[header] = value;
             }
             return newFilters;
         });
     };
+    
+    const clearFilter = (header: string) => {
+        setFilters(prev => {
+            const newFilters = { ...prev };
+            delete newFilters[header];
+            return newFilters;
+        })
+    }
 
     return (
         <div className="flex flex-1 flex-col p-4 sm:p-6 h-full gap-6">
@@ -155,7 +167,7 @@ export default function AssetInventoryPage() {
                                         variant="ghost"
                                         size="icon"
                                         className="h-4 w-4 rounded-full"
-                                        onClick={() => handleFilterChange(header, null)}
+                                        onClick={() => clearFilter(header)}
                                     >
                                         <X className="h-3 w-3" />
                                     </Button>
