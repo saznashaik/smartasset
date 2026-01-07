@@ -192,7 +192,7 @@ export default function AssetInventoryPage() {
                                                             <Filter className="h-4 w-4" />
                                                         </Button>
                                                     </DropdownMenuTrigger>
-                                                    <DropdownMenuContent>
+                                                    <DropdownMenuContent className="max-h-96 overflow-y-auto">
                                                         <DropdownMenuLabel>{header}</DropdownMenuLabel>
                                                         <DropdownMenuSeparator />
                                                         {filters[header] && (
@@ -205,17 +205,17 @@ export default function AssetInventoryPage() {
                                                                 <DropdownMenuSeparator />
                                                             </>
                                                         )}
-                                                        <ScrollArea className="max-h-60">
-                                                            {getUniqueColumnValues(header).map(value => (
-                                                                <DropdownMenuCheckboxItem
-                                                                    key={value}
-                                                                    checked={filters[header] === value}
-                                                                    onSelect={() => handleFilterChange(header, value)}
-                                                                >
-                                                                    {value}
-                                                                </DropdownMenuCheckboxItem>
-                                                            ))}
-                                                        </ScrollArea>
+                                                        
+                                                        {getUniqueColumnValues(header).map(value => (
+                                                            <DropdownMenuCheckboxItem
+                                                                key={value}
+                                                                checked={filters[header] === value}
+                                                                onSelect={() => handleFilterChange(header, value)}
+                                                            >
+                                                                {value}
+                                                            </DropdownMenuCheckboxItem>
+                                                        ))}
+                                                        
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
                                             </div>
