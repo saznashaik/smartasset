@@ -147,15 +147,15 @@ export default function AssetInventoryPage() {
                         />
                     </div>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
+                <div className="flex flex-wrap gap-2">
                     {allHeaders.map(header => (
-                        <div key={header}>
+                        <div key={header} className="flex-auto">
                             <Select
                                 onValueChange={(value) => handleFilterChange(header, value)}
                                 value={filters[header] || 'all'}
                                 disabled={data.length === 0 || !dropdownOptions[header] || dropdownOptions[header].length === 0}
                             >
-                                <SelectTrigger className="text-xs">
+                                <SelectTrigger className="text-xs w-full">
                                     <SelectValue placeholder={header} />
                                 </SelectTrigger>
                                 <SelectContent>
