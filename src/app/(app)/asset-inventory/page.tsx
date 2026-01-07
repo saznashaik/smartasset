@@ -44,16 +44,6 @@ const parseCsvLine = (line: string): string[] => {
     return result;
 };
 
-const DISPLAY_HEADERS = [
-    'Asset ID',
-    'Asset Type',
-    'Location',
-    'Condition',
-    'Risk Score',
-    'Predicted Failure',
-    'Recommended Action'
-];
-
 export default function AssetInventoryPage() {
     const [originalData, setOriginalData] = useState<TableRecord[]>([]);
     const [filteredData, setFilteredData] = useState<TableRecord[]>([]);
@@ -84,7 +74,7 @@ export default function AssetInventoryPage() {
                         });
                         setOriginalData(records);
                         setFilteredData(records);
-                        setAllHeaders(DISPLAY_HEADERS);
+                        setAllHeaders(headerRow);
                     }
                 }
             } catch (error) {
