@@ -1,10 +1,18 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Upload } from 'lucide-react';
+import { Upload, Filter } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator
+} from "@/components/ui/dropdown-menu";
 
 type TableRecord = Record<string, string>;
 
@@ -35,9 +43,11 @@ const parseCsvLine = (line: string): string[] => {
 };
 
 export default function AssetInventoryPage() {
-    const [data, setData] = useState<TableRecord[]>([]);
+    const [originalData, setOriginalData] = useState<TableRecord[]>([]);
+    const [filteredData, setFilteredData] = useState<TableRecord[]>([]);
     const [allHeaders, setAllHeaders] = useState<string[]>([]);
-    
+    const [filters, setFilters] = useState<Record<string, string>>({});
+
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
@@ -50,6 +60,7 @@ export default function AssetInventoryPage() {
                         const firstLine = lines.shift() as string;
                         const headerRow = parseCsvLine(firstLine);
                         setAllHeaders(headerRow);
+                        setFilters({});
 
                         const records: TableRecord[] = lines
                             .filter(line => line.trim() !== '')
@@ -61,12 +72,50 @@ export default function AssetInventoryPage() {
                                 });
                                 return record;
                             });
-                        setData(records);
+                        setOriginalData(records);
+                        setFilteredData(records);
                     }
                 }
             };
             reader.readAsText(file);
         }
+    };
+    
+    useEffect(() => {
+        if (Object.keys(filters).length === 0) {
+            setFilteredData(originalData);
+            return;
+        }
+
+        const newFilteredData = originalData.filter(row => {
+            return Object.entries(filters).every(([header, value]) => {
+                return !value || row[header] === value;
+            });
+        });
+        setFilteredData(newFilteredData);
+    }, [filters, originalData]);
+
+    const getUniqueColumnValues = (header: string) => {
+        const values = new Set<string>();
+        originalData.forEach(row => {
+            if (row[header]) {
+                values.add(row[header]);
+            }
+        });
+        return Array.from(values).sort();
+    };
+
+    const handleFilterChange = (header: string, value: string) => {
+        setFilters(prev => {
+            const newFilters = { ...prev };
+            if (newFilters[header] === value) {
+                // Uncheck/clear filter
+                delete newFilters[header];
+            } else {
+                newFilters[header] = value;
+            }
+            return newFilters;
+        });
     };
 
     return (
@@ -93,7 +142,7 @@ export default function AssetInventoryPage() {
                 </div>
             </div>
 
-            {data.length > 0 ? (
+            {originalData.length > 0 ? (
                 <div className="rounded-md border overflow-x-auto">
                     <Table>
                         <TableHeader>
@@ -102,12 +151,36 @@ export default function AssetInventoryPage() {
                                      <Checkbox />
                                 </TableHead>
                                 {allHeaders.map((header) => (
-                                    <TableHead key={header} className="p-2">{header}</TableHead>
+                                    <TableHead key={header} className="p-2">
+                                        <div className="flex items-center gap-2">
+                                            {header}
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button variant="ghost" size="icon" className="h-6 w-6">
+                                                        <Filter className="h-4 w-4" />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent>
+                                                    <DropdownMenuLabel>{header}</DropdownMenuLabel>
+                                                    <DropdownMenuSeparator />
+                                                    {getUniqueColumnValues(header).map(value => (
+                                                        <DropdownMenuCheckboxItem
+                                                            key={value}
+                                                            checked={filters[header] === value}
+                                                            onSelect={() => handleFilterChange(header, value)}
+                                                        >
+                                                            {value}
+                                                        </DropdownMenuCheckboxItem>
+                                                    ))}
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </div>
+                                    </TableHead>
                                 ))}
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {data.map((row, rowIndex) => (
+                            {filteredData.map((row, rowIndex) => (
                                 <TableRow key={rowIndex}>
                                      <TableCell className="p-2">
                                         <Checkbox />
