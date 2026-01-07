@@ -105,10 +105,10 @@ export default function AssetInventoryPage() {
         return Array.from(values).sort();
     };
 
-    const handleFilterChange = (header: string, value: string) => {
+    const handleFilterChange = (header: string, value: string | null) => {
         setFilters(prev => {
             const newFilters = { ...prev };
-            if (newFilters[header] === value) {
+            if (value === null || newFilters[header] === value) {
                 // Uncheck/clear filter
                 delete newFilters[header];
             } else {
@@ -163,6 +163,16 @@ export default function AssetInventoryPage() {
                                                 <DropdownMenuContent>
                                                     <DropdownMenuLabel>{header}</DropdownMenuLabel>
                                                     <DropdownMenuSeparator />
+                                                    {filters[header] && (
+                                                        <>
+                                                            <DropdownMenuCheckboxItem
+                                                                onSelect={() => handleFilterChange(header, null)}
+                                                            >
+                                                                Clear Filter
+                                                            </DropdownMenuCheckboxItem>
+                                                            <DropdownMenuSeparator />
+                                                        </>
+                                                    )}
                                                     {getUniqueColumnValues(header).map(value => (
                                                         <DropdownMenuCheckboxItem
                                                             key={value}
