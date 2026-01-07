@@ -14,6 +14,7 @@ import {
   DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
 import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 type TableRecord = Record<string, string>;
 
@@ -200,7 +201,8 @@ export default function AssetInventoryPage() {
                                                             <Filter className="h-4 w-4" />
                                                         </Button>
                                                     </DropdownMenuTrigger>
-                                                    <DropdownMenuContent className="max-h-96 overflow-y-auto">
+                                                    <DropdownMenuContent>
+                                                        <ScrollArea className="h-72">
                                                         <DropdownMenuLabel>{header}</DropdownMenuLabel>
                                                         <DropdownMenuSeparator />
                                                         {filters[header] && (
@@ -223,7 +225,7 @@ export default function AssetInventoryPage() {
                                                                 {value}
                                                             </DropdownMenuCheckboxItem>
                                                         ))}
-                                                        
+                                                        </ScrollArea>
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
                                             </div>
