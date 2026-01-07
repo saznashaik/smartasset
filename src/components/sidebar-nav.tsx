@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, MessageSquare } from "lucide-react";
+import { LayoutDashboard, MessageSquare, List } from "lucide-react";
 import { SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
 
 const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/asset-inventory", label: "Asset Inventory", icon: List },
     { href: "/chat", label: "Chat AI", icon: MessageSquare },
 ];
 
