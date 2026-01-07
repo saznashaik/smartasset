@@ -146,14 +146,14 @@ export default function AssetInventoryPage() {
 
             <div className="p-4 border rounded-lg bg-card space-y-4">
                 <div className="flex flex-col md:flex-row gap-4">
-                    <div className="relative">
+                    <div className="relative flex-grow">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
                             type="text"
                             placeholder="Search Asset ID, Brand, Model..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-10 w-full md:w-80"
+                            className="pl-10 w-full"
                             disabled={data.length === 0}
                         />
                     </div>
@@ -179,24 +179,25 @@ export default function AssetInventoryPage() {
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                     {visibleHeaders.map(header => (
-                        <Select
-                            key={header}
-                            onValueChange={(value) => handleFilterChange(header, value)}
-                            value={filters[header] || 'all'}
-                            disabled={data.length === 0 || !dropdownOptions[header] || dropdownOptions[header].length === 0}
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder={`Filter ${header}`} />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">All {header}s</SelectItem>
-                                {dropdownOptions[header]?.map(option => (
-                                    <SelectItem key={option} value={option}>{option}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                        <div key={header} className="min-w-[120px]">
+                            <Select
+                                onValueChange={(value) => handleFilterChange(header, value)}
+                                value={filters[header] || 'all'}
+                                disabled={data.length === 0 || !dropdownOptions[header] || dropdownOptions[header].length === 0}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder={`Filter ${header}`} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">All {header}s</SelectItem>
+                                    {dropdownOptions[header]?.map(option => (
+                                        <SelectItem key={option} value={option}>{option}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
                     ))}
                 </div>
 
