@@ -21,8 +21,7 @@ export default function AssetInventoryPage() {
     const [dropdownOptions, setDropdownOptions] = useState<Record<string, string[]>>({});
 
     const filterableColumns = useMemo(() => {
-        if (allHeaders.length === 0) return [];
-        return allHeaders.filter(h => ['Asset Type', 'Brand', 'Department', 'Status'].includes(h));
+        return allHeaders;
     }, [allHeaders]);
 
     useEffect(() => {
@@ -190,7 +189,7 @@ export default function AssetInventoryPage() {
                             key={header}
                             onValueChange={(value) => handleFilterChange(header, value)}
                             value={filters[header] || 'all'}
-                            disabled={data.length === 0 || !dropdownOptions[header]}
+                            disabled={data.length === 0 || !dropdownOptions[header] || dropdownOptions[header].length === 0}
                         >
                             <SelectTrigger>
                                 <SelectValue placeholder={header} />
