@@ -1,13 +1,38 @@
 "use client";
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from "@/components/ui/badge";
 import { Upload } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 
 type TableRecord = Record<string, string>;
+
+// A more robust CSV parser that handles quoted fields.
+const parseCsvLine = (line: string): string[] => {
+    const result: string[] = [];
+    let current = '';
+    let inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (char === '"') {
+            if (inQuotes && line[i + 1] === '"') {
+                // Handle escaped quote
+                current += '"';
+                i++;
+            } else {
+                inQuotes = !inQuotes;
+            }
+        } else if (char === ',' && !inQuotes) {
+            result.push(current.trim());
+            current = '';
+        } else {
+            current += char;
+        }
+    }
+    result.push(current.trim());
+    return result;
+};
 
 export default function AssetInventoryPage() {
     const [data, setData] = useState<TableRecord[]>([]);
@@ -23,16 +48,16 @@ export default function AssetInventoryPage() {
                     const lines = text.split(/\r\n|\n/);
                     if (lines.length > 0) {
                         const firstLine = lines.shift() as string;
-                        const headerRow = firstLine.split(',').map(h => h.trim());
+                        const headerRow = parseCsvLine(firstLine);
                         setAllHeaders(headerRow);
 
                         const records: TableRecord[] = lines
                             .filter(line => line.trim() !== '')
                             .map(line => {
-                                const values = line.split(',');
+                                const values = parseCsvLine(line);
                                 const record: TableRecord = {};
                                 headerRow.forEach((header, index) => {
-                                    record[header] = values[index]?.trim() || '';
+                                    record[header] = values[index] || '';
                                 });
                                 return record;
                             });
