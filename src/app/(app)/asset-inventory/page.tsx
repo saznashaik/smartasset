@@ -115,7 +115,8 @@ export default function AssetInventoryPage() {
                 if (!value) return true;
                 if (DATE_COLUMNS.includes(header)) {
                     const rowDate = new Date(row[header]);
-                    return rowDate.getFullYear().toString() === value;
+                    // Check if the date is valid before comparing
+                    return !isNaN(rowDate.getTime()) && rowDate.getFullYear().toString() === value;
                 }
                 return row[header] === value;
             });
