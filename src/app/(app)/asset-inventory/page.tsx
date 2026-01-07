@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Upload, Filter } from 'lucide-react';
+import { Upload, Filter, X } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
@@ -13,6 +13,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 type TableRecord = Record<string, string>;
 
@@ -55,7 +57,7 @@ export default function AssetInventoryPage() {
             reader.onload = (e) => {
                 const text = e.target?.result as string;
                 if (text) {
-                    const lines = text.split(/\r\n|\n/);
+                    const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '');
                     if (lines.length > 0) {
                         const firstLine = lines.shift() as string;
                         const headerRow = parseCsvLine(firstLine);
@@ -63,7 +65,6 @@ export default function AssetInventoryPage() {
                         setFilters({});
 
                         const records: TableRecord[] = lines
-                            .filter(line => line.trim() !== '')
                             .map(line => {
                                 const values = parseCsvLine(line);
                                 const record: TableRecord = {};
@@ -143,68 +144,90 @@ export default function AssetInventoryPage() {
             </div>
 
             {originalData.length > 0 ? (
-                <div className="rounded-md border overflow-x-auto">
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead className="w-[50px] p-2">
-                                     <Checkbox />
-                                </TableHead>
-                                {allHeaders.map((header) => (
-                                    <TableHead key={header} className="p-2">
-                                        <div className="flex items-center gap-2">
-                                            {header}
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon" className="h-6 w-6">
-                                                        <Filter className="h-4 w-4" />
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent>
-                                                    <DropdownMenuLabel>{header}</DropdownMenuLabel>
-                                                    <DropdownMenuSeparator />
-                                                    {filters[header] && (
-                                                        <>
-                                                            <DropdownMenuCheckboxItem
-                                                                onSelect={() => handleFilterChange(header, null)}
-                                                            >
-                                                                Clear Filter
-                                                            </DropdownMenuCheckboxItem>
-                                                            <DropdownMenuSeparator />
-                                                        </>
-                                                    )}
-                                                    {getUniqueColumnValues(header).map(value => (
-                                                        <DropdownMenuCheckboxItem
-                                                            key={value}
-                                                            checked={filters[header] === value}
-                                                            onSelect={() => handleFilterChange(header, value)}
-                                                        >
-                                                            {value}
-                                                        </DropdownMenuCheckboxItem>
-                                                    ))}
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
-                                        </div>
+                <>
+                    {Object.keys(filters).length > 0 && (
+                        <div className="flex items-center gap-2 flex-wrap">
+                            <p className="text-sm font-medium">Active Filters:</p>
+                            {Object.entries(filters).map(([header, value]) => (
+                                <Badge key={header} variant="secondary" className="flex items-center gap-1">
+                                    {header}: {value}
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-4 w-4 rounded-full"
+                                        onClick={() => handleFilterChange(header, null)}
+                                    >
+                                        <X className="h-3 w-3" />
+                                    </Button>
+                                </Badge>
+                            ))}
+                        </div>
+                    )}
+                    <div className="rounded-md border overflow-x-auto">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="w-[50px] p-2">
+                                         <Checkbox />
                                     </TableHead>
-                                ))}
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {filteredData.map((row, rowIndex) => (
-                                <TableRow key={rowIndex}>
-                                     <TableCell className="p-2">
-                                        <Checkbox />
-                                    </TableCell>
                                     {allHeaders.map((header) => (
-                                        <TableCell key={`${rowIndex}-${header}`} className="p-2">
-                                            {row[header]}
-                                        </TableCell>
+                                        <TableHead key={header} className="p-2">
+                                            <div className="flex items-center gap-2">
+                                                {header}
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button variant="ghost" size="icon" className="h-6 w-6">
+                                                            <Filter className="h-4 w-4" />
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent>
+                                                        <DropdownMenuLabel>{header}</DropdownMenuLabel>
+                                                        <DropdownMenuSeparator />
+                                                        {filters[header] && (
+                                                            <>
+                                                                <DropdownMenuCheckboxItem
+                                                                    onSelect={() => handleFilterChange(header, null)}
+                                                                >
+                                                                    Clear Filter
+                                                                </DropdownMenuCheckboxItem>
+                                                                <DropdownMenuSeparator />
+                                                            </>
+                                                        )}
+                                                        <ScrollArea className="max-h-60">
+                                                            {getUniqueColumnValues(header).map(value => (
+                                                                <DropdownMenuCheckboxItem
+                                                                    key={value}
+                                                                    checked={filters[header] === value}
+                                                                    onSelect={() => handleFilterChange(header, value)}
+                                                                >
+                                                                    {value}
+                                                                </DropdownMenuCheckboxItem>
+                                                            ))}
+                                                        </ScrollArea>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            </div>
+                                        </TableHead>
                                     ))}
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </div>
+                            </TableHeader>
+                            <TableBody>
+                                {filteredData.map((row, rowIndex) => (
+                                    <TableRow key={rowIndex}>
+                                         <TableCell className="p-2">
+                                            <Checkbox />
+                                        </TableCell>
+                                        {allHeaders.map((header) => (
+                                            <TableCell key={`${rowIndex}-${header}`} className="p-2">
+                                                {row[header]}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                </>
             ) : (
                 <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm min-h-[400px]">
                     <div className="flex flex-col items-center gap-2 text-center">
