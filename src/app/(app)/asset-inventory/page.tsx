@@ -7,13 +7,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Upload, Download, Save, X } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuCheckboxItem } from '@/components/ui/dropdown-menu';
+import { ChevronDown } from 'lucide-react';
 
 type TableRecord = Record<string, string>;
 
 export default function AssetInventoryPage() {
     const [data, setData] = useState<TableRecord[]>([]);
     const [allHeaders, setAllHeaders] = useState<string[]>([]);
-    const [searchTerm, setSearchTerm] = useState('');
+    const [visibleHeaders, setVisibleHeaders] = useState<string[]>([]);
     const [filters, setFilters] = useState<Record<string, string>>({});
     const [dropdownOptions, setDropdownOptions] = useState<Record<string, string[]>>({});
 
@@ -40,8 +42,8 @@ export default function AssetInventoryPage() {
                         const firstLine = lines.shift() as string;
                         const headerRow = firstLine.split(',').map(h => h.trim());
                         setAllHeaders(headerRow);
+                        setVisibleHeaders(headerRow);
                         setFilters({});
-                        setSearchTerm('');
 
                         const records: TableRecord[] = lines
                             .filter(line => line.trim() !== '')
@@ -82,19 +84,10 @@ export default function AssetInventoryPage() {
 
     const clearAllFilters = () => {
         setFilters({});
-        setSearchTerm('');
     };
 
     const filteredData = useMemo(() => {
         let filtered = data;
-
-        if (searchTerm) {
-            filtered = filtered.filter(row =>
-                Object.values(row).some(value =>
-                    value.toLowerCase().includes(searchTerm.toLowerCase())
-                )
-            );
-        }
 
         if (Object.keys(filters).length > 0) {
             filtered = filtered.filter(row =>
@@ -105,7 +98,7 @@ export default function AssetInventoryPage() {
         }
 
         return filtered;
-    }, [data, searchTerm, filters]);
+    }, [data, filters]);
 
     const activeFilters = Object.entries(filters);
 
@@ -116,25 +109,51 @@ export default function AssetInventoryPage() {
                     <h2 className="text-2xl font-bold tracking-tight">Asset Inventory</h2>
                     <p className="text-sm text-muted-foreground">View, search, and filter all enterprise assets.</p>
                 </div>
-                 <Button asChild variant="outline">
-                    <label htmlFor="csv-upload" className="cursor-pointer">
-                        <Upload className="mr-2" />
-                        Upload CSV
-                        <input
-                            id="csv-upload"
-                            type="file"
-                            accept=".csv"
-                            onChange={handleFileUpload}
-                            className="hidden"
-                        />
-                    </label>
-                </Button>
+                <div className="flex items-center gap-2">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline">
+                                View <ChevronDown className="ml-2 h-4 w-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            {allHeaders.map(header => (
+                                <DropdownMenuCheckboxItem
+                                    key={header}
+                                    checked={visibleHeaders.includes(header)}
+                                    onCheckedChange={(checked) => {
+                                        if (checked) {
+                                            setVisibleHeaders(prev => [...prev, header]);
+                                        } else {
+                                            setVisibleHeaders(prev => prev.filter(h => h !== header));
+                                        }
+                                    }}
+                                >
+                                    {header}
+                                </DropdownMenuCheckboxItem>
+                            ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                    <Button asChild variant="outline">
+                        <label htmlFor="csv-upload" className="cursor-pointer">
+                            <Upload className="mr-2" />
+                            Upload CSV
+                            <input
+                                id="csv-upload"
+                                type="file"
+                                accept=".csv"
+                                onChange={handleFileUpload}
+                                className="hidden"
+                            />
+                        </label>
+                    </Button>
+                </div>
             </div>
 
 
             <div className="p-4 border rounded-lg bg-card space-y-4">
-                <div className="grid grid-cols-6 gap-2">
-                    {allHeaders.map(header => (
+                <div className="grid grid-cols-5 gap-2">
+                    {visibleHeaders.map(header => (
                         <div key={header}>
                             <Select
                                 onValueChange={(value) => handleFilterChange(header, value)}
@@ -185,7 +204,7 @@ export default function AssetInventoryPage() {
                                 <TableHead className="w-[50px]">
                                      <Checkbox />
                                 </TableHead>
-                                {allHeaders.map((header) => (
+                                {visibleHeaders.map((header) => (
                                     <TableHead key={header}>{header}</TableHead>
                                 ))}
                             </TableRow>
@@ -196,7 +215,7 @@ export default function AssetInventoryPage() {
                                      <TableCell>
                                         <Checkbox />
                                     </TableCell>
-                                    {allHeaders.map((header) => (
+                                    {visibleHeaders.map((header) => (
                                         <TableCell key={`${rowIndex}-${header}`}>
                                             {header === 'Status' ? (
                                                 <Badge variant={row[header] === 'Active' ? 'default' : 'destructive'} className={row[header] === 'Active' ? 'bg-green-500' : ''}>{row[header]}</Badge>
