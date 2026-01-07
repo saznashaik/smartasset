@@ -155,7 +155,7 @@ export default function AssetInventoryPage() {
                                 value={filters[header] || 'all'}
                                 disabled={data.length === 0 || !dropdownOptions[header] || dropdownOptions[header].length === 0}
                             >
-                                <SelectTrigger className="text-xs w-full">
+                                <SelectTrigger className="text-xs">
                                     <SelectValue placeholder={header} />
                                 </SelectTrigger>
                                 <SelectContent>
