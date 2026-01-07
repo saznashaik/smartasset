@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Upload, Filter, X } from 'lucide-react';
+import { Filter, X } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
@@ -44,43 +44,58 @@ const parseCsvLine = (line: string): string[] => {
     return result;
 };
 
+const DISPLAY_HEADERS = [
+    'Asset ID',
+    'Asset Type',
+    'Location',
+    'Condition',
+    'Risk Score',
+    'Predicted Failure',
+    'Recommended Action'
+];
+
 export default function AssetInventoryPage() {
     const [originalData, setOriginalData] = useState<TableRecord[]>([]);
     const [filteredData, setFilteredData] = useState<TableRecord[]>([]);
     const [allHeaders, setAllHeaders] = useState<string[]>([]);
     const [filters, setFilters] = useState<Record<string, string>>({});
+    const [loading, setLoading] = useState(true);
 
-    const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const text = e.target?.result as string;
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch('https://raw.githubusercontent.com/saznashaik/smartasset/main/asset_decision_predictions%20(1).csv');
+                const text = await response.text();
+                
                 if (text) {
                     const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '');
                     if (lines.length > 0) {
                         const firstLine = lines.shift() as string;
                         const headerRow = parseCsvLine(firstLine);
-                        setAllHeaders(headerRow);
                         setFilters({});
 
-                        const records: TableRecord[] = lines
-                            .map(line => {
-                                const values = parseCsvLine(line);
-                                const record: TableRecord = {};
-                                headerRow.forEach((header, index) => {
-                                    record[header] = values[index] || '';
-                                });
-                                return record;
+                        const records: TableRecord[] = lines.map(line => {
+                            const values = parseCsvLine(line);
+                            const record: TableRecord = {};
+                            headerRow.forEach((header, index) => {
+                                record[header] = values[index] || '';
                             });
+                            return record;
+                        });
                         setOriginalData(records);
                         setFilteredData(records);
+                        setAllHeaders(DISPLAY_HEADERS);
                     }
                 }
-            };
-            reader.readAsText(file);
-        }
-    };
+            } catch (error) {
+                console.error("Error fetching or parsing CSV data:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
     
     useEffect(() => {
         if (Object.keys(filters).length === 0) {
@@ -138,24 +153,20 @@ export default function AssetInventoryPage() {
                     <h2 className="text-2xl font-bold tracking-tight">Asset Inventory</h2>
                     <p className="text-sm text-muted-foreground">View, search, and filter all enterprise assets.</p>
                 </div>
-                <div className="flex items-center gap-2">
-                    <Button asChild variant="outline">
-                        <label htmlFor="csv-upload" className="cursor-pointer">
-                            <Upload className="mr-2" />
-                            Upload CSV
-                            <input
-                                id="csv-upload"
-                                type="file"
-                                accept=".csv"
-                                onChange={handleFileUpload}
-                                className="hidden"
-                            />
-                        </label>
-                    </Button>
-                </div>
             </div>
 
-            {originalData.length > 0 ? (
+            {loading ? (
+                 <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm min-h-[400px]">
+                    <div className="flex flex-col items-center gap-2 text-center">
+                        <h3 className="text-2xl font-bold tracking-tight">
+                            Loading Data...
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                            Fetching asset data from the source.
+                        </p>
+                    </div>
+                </div>
+            ) : originalData.length > 0 ? (
                 <>
                     {Object.keys(filters).length > 0 && (
                         <div className="flex items-center gap-2 flex-wrap">
@@ -244,10 +255,10 @@ export default function AssetInventoryPage() {
                 <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm min-h-[400px]">
                     <div className="flex flex-col items-center gap-2 text-center">
                         <h3 className="text-2xl font-bold tracking-tight">
-                            No data uploaded
+                            No data available
                         </h3>
                         <p className="text-sm text-muted-foreground">
-                            Upload a CSV file to see your asset inventory.
+                            Could not load data from the source.
                         </p>
                     </div>
                 </div>
