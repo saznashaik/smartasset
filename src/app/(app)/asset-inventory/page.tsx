@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Upload, Search, Download, Save, X } from 'lucide-react';
+import { Upload, Download, Save, X } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 
 type TableRecord = Record<string, string>;
@@ -135,38 +135,27 @@ export default function AssetInventoryPage() {
 
             <div className="p-4 border rounded-lg bg-card space-y-4">
                 <div className="flex flex-col md:flex-row gap-4">
-                    <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                            type="text"
-                            placeholder="Search Asset ID, Brand, Model..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-10 w-full"
-                            disabled={data.length === 0}
-                        />
+                    <div className="grid grid-cols-6 gap-2">
+                        {allHeaders.map(header => (
+                            <div key={header}>
+                                <Select
+                                    onValueChange={(value) => handleFilterChange(header, value)}
+                                    value={filters[header] || 'all'}
+                                    disabled={data.length === 0 || !dropdownOptions[header] || dropdownOptions[header].length === 0}
+                                >
+                                    <SelectTrigger className="text-xs">
+                                        <SelectValue placeholder={header} />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All</SelectItem>
+                                        {dropdownOptions[header]?.map(option => (
+                                            <SelectItem key={option} value={option}>{option}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        ))}
                     </div>
-                </div>
-                <div className="grid grid-cols-6 gap-2">
-                    {allHeaders.map(header => (
-                        <div key={header}>
-                            <Select
-                                onValueChange={(value) => handleFilterChange(header, value)}
-                                value={filters[header] || 'all'}
-                                disabled={data.length === 0 || !dropdownOptions[header] || dropdownOptions[header].length === 0}
-                            >
-                                <SelectTrigger className="text-xs">
-                                    <SelectValue placeholder={header} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All</SelectItem>
-                                    {dropdownOptions[header]?.map(option => (
-                                        <SelectItem key={option} value={option}>{option}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    ))}
                 </div>
 
                 {activeFilters.length > 0 && (
