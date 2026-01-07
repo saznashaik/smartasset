@@ -6,23 +6,24 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Upload, Search, Download, Save, X } from 'lucide-react';
+import { Upload, Search, Download, Save, X, ChevronDown } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 
 type TableRecord = Record<string, string>;
 
 export default function AssetInventoryPage() {
     const [data, setData] = useState<TableRecord[]>([]);
-    const [headers, setHeaders] = useState<string[]>([]);
+    const [allHeaders, setAllHeaders] = useState<string[]>([]);
+    const [visibleHeaders, setVisibleHeaders] = useState<string[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [filters, setFilters] = useState<Record<string, string>>({});
     const [dropdownOptions, setDropdownOptions] = useState<Record<string, string[]>>({});
 
     const filterableColumns = useMemo(() => {
-        if (headers.length === 0) return [];
-        // Example columns, can be adjusted
-        return headers.filter(h => ['Asset Type', 'Brand', 'Department', 'Status'].includes(h));
-    }, [headers]);
+        if (allHeaders.length === 0) return [];
+        return allHeaders.filter(h => ['Asset Type', 'Brand', 'Department', 'Status'].includes(h));
+    }, [allHeaders]);
 
     useEffect(() => {
         if (data.length > 0) {
@@ -46,7 +47,8 @@ export default function AssetInventoryPage() {
                     if (lines.length > 0) {
                         const firstLine = lines.shift() as string;
                         const headerRow = firstLine.split(',').map(h => h.trim());
-                        setHeaders(headerRow);
+                        setAllHeaders(headerRow);
+                        setVisibleHeaders(headerRow);
                         setFilters({});
                         setSearchTerm('');
 
@@ -116,6 +118,14 @@ export default function AssetInventoryPage() {
 
     const activeFilters = Object.entries(filters);
 
+    const toggleColumnVisibility = (header: string) => {
+        setVisibleHeaders(prev => 
+            prev.includes(header) 
+                ? prev.filter(h => h !== header) 
+                : [...prev, header]
+        );
+    };
+
     return (
         <div className="flex flex-1 flex-col p-4 sm:p-6 h-full gap-6">
             <div className="flex items-center justify-between">
@@ -152,7 +162,27 @@ export default function AssetInventoryPage() {
                             disabled={data.length === 0}
                         />
                     </div>
-                    <Button disabled={data.length === 0}><Search className="mr-2 h-4 w-4" /> Search</Button>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" disabled={data.length === 0}>
+                                View <ChevronDown className="ml-2 h-4 w-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            {allHeaders.map((header) => (
+                                <DropdownMenuCheckboxItem
+                                    key={header}
+                                    checked={visibleHeaders.includes(header)}
+                                    onCheckedChange={() => toggleColumnVisibility(header)}
+                                    onSelect={(e) => e.preventDefault()}
+                                >
+                                    {header}
+                                </DropdownMenuCheckboxItem>
+                            ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                     {filterableColumns.map(header => (
@@ -205,7 +235,7 @@ export default function AssetInventoryPage() {
                                 <TableHead className="w-[50px]">
                                      <Checkbox />
                                 </TableHead>
-                                {headers.map((header) => (
+                                {visibleHeaders.map((header) => (
                                     <TableHead key={header}>{header}</TableHead>
                                 ))}
                             </TableRow>
@@ -216,7 +246,7 @@ export default function AssetInventoryPage() {
                                      <TableCell>
                                         <Checkbox />
                                     </TableCell>
-                                    {headers.map((header) => (
+                                    {visibleHeaders.map((header) => (
                                         <TableCell key={`${rowIndex}-${header}`}>
                                             {header === 'Status' ? (
                                                 <Badge variant={row[header] === 'Active' ? 'default' : 'destructive'} className={row[header] === 'Active' ? 'bg-green-500' : ''}>{row[header]}</Badge>
@@ -245,5 +275,3 @@ export default function AssetInventoryPage() {
         </div>
     );
 }
-
-    
