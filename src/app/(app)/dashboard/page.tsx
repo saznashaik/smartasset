@@ -68,7 +68,7 @@ export default function DashboardPage() {
                 <iframe
                     width="100%"
                     height="100%"
-                    src="https://us-east-1.quicksight.aws.amazon.com/sn/embed/share/accounts/430248170338/dashboards/f9ae3294-c908-483f-91ef-8469921e94e7?directory_alias=Keerthisri"
+                    src="https://us-west-2.quicksight.aws.amazon.com/sn/embed/share/accounts/577638367293/dashboards/9cf557a1-72a7-417e-b2c9-75d7974af453?directory_alias=SouthlandInd-SmartAsset"
                     style={{ border: 'none' }}
                 >
                 </iframe>
