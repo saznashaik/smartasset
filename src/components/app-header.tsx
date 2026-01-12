@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { useMemo } from "react";
 
 const pageTitles: { [key: string]: string } = {
-    "/dashboard": "SmartAsset Management - Executive Dashboard",
+    "/dashboard": "Smart Asset Management Executive Dashboard",
     "/asset-inventory": "Asset Inventory",
     "/chat": "Chat with AssetAI",
 };
