@@ -6,7 +6,7 @@ import { useMemo } from "react";
 const pageTitles: { [key: string]: string } = {
     "/dashboard": "Smart Asset Management - Executive Dashboard",
     "/asset-inventory": "Asset Inventory",
-    "/chat": "Chat with AssetAI",
+    "/chat": "Chat with Smart Asset Bot",
 };
 
 export function AppHeader() {
