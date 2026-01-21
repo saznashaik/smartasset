@@ -54,8 +54,8 @@ export default function LoginPage() {
     return (
         <Card className="w-full max-w-md">
             <CardHeader className="text-center">
-                <CardTitle>Welcome Back!</CardTitle>
-                <CardDescription>Sign in to continue to AssetAI Central</CardDescription>
+                <CardTitle>SmartAsset</CardTitle>
+                <CardDescription>Sign in to continue</CardDescription>
             </CardHeader>
             <CardContent>
                 <Form {...form}>
