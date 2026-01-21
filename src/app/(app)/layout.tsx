@@ -35,7 +35,7 @@ export default function AppLayout({ children }: PropsWithChildren) {
     }
     
     return (
-        <SidebarProvider defaultOpen={false}>
+        <SidebarProvider defaultOpen={true}>
             <Sidebar>
                 <SidebarHeader>
                     <AppLogo />

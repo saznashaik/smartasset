@@ -15,7 +15,7 @@ export default function AuthLayout({ children }: PropsWithChildren) {
         }
     }, [user, isUserLoading, router]);
 
-    if(isUserLoading || user) {
+    if(isUserLoading) {
         return (
              <div className="flex h-screen w-screen items-center justify-center">
                  <div className="flex items-center text-sm text-muted-foreground">
@@ -28,6 +28,11 @@ export default function AuthLayout({ children }: PropsWithChildren) {
             </div>
         );
     }
+
+    if (user) {
+        return null;
+    }
+
     return (
         <div className="flex items-center justify-center min-h-screen bg-background">
             {children}
