@@ -24,7 +24,7 @@ import {
 import { useAuth } from '@/firebase';
 import { initiateEmailSignIn } from '@/firebase/non-blocking-login';
 import { useRouter } from 'next/navigation';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, User } from 'lucide-react';
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Invalid email address.' }),
@@ -54,7 +54,12 @@ export default function LoginPage() {
     return (
         <Card className="w-full max-w-md">
             <CardHeader className="text-center">
-                <CardTitle>SmartAsset</CardTitle>
+                <div className="flex items-center justify-center gap-2 mb-2">
+                    <div className="bg-primary rounded-full p-3">
+                        <User className="h-6 w-6 text-primary-foreground" />
+                    </div>
+                    <CardTitle>SmartAsset</CardTitle>
+                </div>
                 <CardDescription>Sign in to continue</CardDescription>
             </CardHeader>
             <CardContent>
