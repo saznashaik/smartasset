@@ -54,12 +54,12 @@ export default function LoginPage() {
     return (
         <Card className="w-full max-w-md">
             <CardHeader className="text-center">
-                <div className="flex items-center justify-center gap-2 mb-2">
+                <div className="flex justify-center mb-2">
                     <div className="bg-primary rounded-full p-3">
                         <User className="h-6 w-6 text-primary-foreground" />
                     </div>
-                    <CardTitle>SmartAsset</CardTitle>
                 </div>
+                <CardTitle>SmartAsset</CardTitle>
                 <CardDescription>Sign in to continue</CardDescription>
             </CardHeader>
             <CardContent>
