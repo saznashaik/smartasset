@@ -1,0 +1,104 @@
+/**
+ * @file firestore.rules
+ * @description Firestore Security Rules for the AssetAI Central application.
+ *
+ * @version 1.0
+ *
+ * ## Core Philosophy
+ * This ruleset enforces a strict user-ownership model. All data is scoped to a
+ * specific user and can only be accessed, modified, or deleted by that authenticated
+ * user. The rules are designed to be secure by default, denying access unless
+ * explicitly granted.
+ *
+ * ## Data Structure
+ * The data is organized hierarchically to reflect ownership clearly:
+ * - /users/{userId}: Stores the public profile for a specific user.
+ * - /users/{userId}/sessions/{sessionId}: Stores private session data for that user.
+ * This path-based approach makes authorization checks simple and performant.
+ *
+ * ## Key Security Decisions
+ * - User Enumeration Disabled: Listing the top-level `/users` collection is
+ *   disallowed to prevent malicious actors from discovering all users of the app.
+ * - Strict Ownership: A user can only ever interact with documents under their
+ *   own path (e.g., /users/their-own-id/...).
+ * - Self-Creation: Users are permitted to create their own initial user profile
+ *   document, which is essential for the sign-up process.
+ *
+ * ## Denormalization for Authorization
+ * Authorization is achieved directly through the document paths (e.g., `userId` in
+ * `/users/{userId}`). This is the most performant method as it avoids extra `get()`
+ * calls to other documents. We also enforce that documents contain an internal ID
+ * (`id` or `userId`) that matches the path, ensuring relational integrity between
+ * the data and its location.
+ *
+ * ## Structural Segregation
+ * This model uses separate collections and subcollections for different data
+ * types (profiles vs. sessions), which naturally segregates access permissions
+ * and improves security and query performance.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // -------------------------------------------------------------------------
+    // Helper Functions
+    // -------------------------------------------------------------------------
+
+    /**
+     * Checks if the user is authenticated.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * Checks if the authenticated user's UID matches the provided userId.
+     * This is the primary function for verifying document ownership.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * Checks for ownership on an existing document. Used for update and delete
+     * operations to prevent acting on non-existent data.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    // -------------------------------------------------------------------------
+    // Collection Rules
+    // -------------------------------------------------------------------------
+
+    /**
+     * @description Manages user profile documents.
+     * @path /users/{userId}
+     * @allow (create) An authenticated user creating their own profile document.
+     * @deny (get) A user trying to read another user's profile.
+     * @principle Enforces strict user ownership and allows self-creation of profile data.
+     */
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false; // Prevents user enumeration for security.
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Manages a user's private session documents.
+     * @path /users/{userId}/sessions/{sessionId}
+     * @allow (create) An authenticated user creating a new session for themselves.
+     * @deny (list) A user trying to list sessions belonging to another user.
+     * @principle Restricts access to a user's own data tree, ensuring privacy.
+     */
+    match /users/{userId}/sessions/{sessionId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.userId == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isExistingOwner(userId);
+    }
+  }
+}
